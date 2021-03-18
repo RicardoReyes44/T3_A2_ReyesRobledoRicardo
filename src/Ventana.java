@@ -14,13 +14,20 @@ public class Ventana extends JFrame implements ActionListener{
 		setTitle("Tarea de concurrencia");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
+		
 		JTextArea area1 = new JTextArea();
 		JTextArea area2 = new JTextArea();
 		
-		JLabel txt = new JLabel(" ");
+		JLabel lbl = new JLabel("asdasd");
+		
+		add(area1);
+		add(area2);
+		add(lbl);
+		
 		
 		setVisible(true);
 		setLocationRelativeTo(null);
+		pack();
 	}
 
 	@Override
