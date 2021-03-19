@@ -1,9 +1,13 @@
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 
@@ -15,14 +19,37 @@ public class Ventana extends JFrame implements ActionListener{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		
-		JTextArea area1 = new JTextArea();
-		JTextArea area2 = new JTextArea();
+		JTextArea area1 = new JTextArea(10, 10);
+		area1.setLineWrap(true);
+    	area1.setWrapStyleWord(true);
+    	
+		JTextArea area2 = new JTextArea(10, 10);
+		area2.setLineWrap(true);
+    	area2.setWrapStyleWord(true);
+    	
+		area1.setBackground(new Color(171,219,227));
+		area1.setForeground(new Color(33,19,13));
+		area2.setBackground(new Color(135,62,35));
+		area2.setForeground(new Color(171,219,227));
 		
-		JLabel lbl = new JLabel("asdasd");
+		area1.setEditable(false);
+		area2.setEditable(false);
 		
-		add(area1);
-		add(area2);
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout());
+		panel.add(area1);
+		panel.setBorder(BorderFactory.createTitledBorder("Si"));
+		add(panel);
+		
+		JLabel lbl = new JLabel("   ");
+		
 		add(lbl);
+		
+		JPanel panel2 = new JPanel();
+		panel2.setLayout(new FlowLayout());
+		panel2.add(area2);
+		panel2.setBorder(BorderFactory.createTitledBorder("No"));
+		add(panel2);
 		
 		
 		setVisible(true);
