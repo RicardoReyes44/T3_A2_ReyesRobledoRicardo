@@ -3,11 +3,15 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Timer;
+
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -17,29 +21,72 @@ class Contenedor implements Runnable{
 	ArrayList<String> al;
 	JTextArea area1;
 	JTextArea area2; 
+	JProgressBar pg;
 
 	
-	public Contenedor(ArrayList<String> al, JTextArea area1, JTextArea area2){
+	public Contenedor(JProgressBar pg, ArrayList<String> al, JTextArea area1, JTextArea area2){
 		this.al=al;
 		this.area1=area1;
 		this.area2=area2;
+		this.pg=pg;
 	}
 	
 
 	@Override
 	public void run() {
 		
-		int i=0, j=0;
+        ProgressBar pg2 = new ProgressBar(pg, al, area1, area2);
+		
+		Thread t2 = new Thread(pg2);
+		t2.start();
+		
+		long i=0, j=0;
 		for(String a: al) {
 			if(a.equals("Si")) {
-				area1.insert(i+" "+a+"\n", 0);
-				i++;
+				area1.append((i++)+" "+a+"\n");
 			}else {
-				area2.insert(j+" "+a+"\n", 0);
-				j++;
+				area2.append((j++)+" "+a+"\n");
 			}
+				
 		}
 		
+	}
+}
+
+
+class ProgressBar implements Runnable{
+	
+	JProgressBar pg;
+	ArrayList<String> al;
+	JTextArea area1;
+	JTextArea area2;
+	
+	public ProgressBar(JProgressBar pg, ArrayList<String> al, JTextArea area1, JTextArea area2){
+		this.pg = pg;
+		this.al = al;
+		this.area1=area1;
+		this.area2=area2;
+	}
+
+	@Override
+	public void run() {
+		pg.setMaximum(30000);
+		
+		for(int i=1; i<=30000; i+=11) {
+		
+		if (i<15000) 
+            pg.setString("Espera..."); 
+        else if (i< 30000) 
+            pg.setString("Vamos a la mitad..."); 
+		pg.setValue(i);
+		try {
+			Thread.sleep(3);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    }
+       	pg.setString("Listo");
 	}
 }
 
@@ -57,7 +104,8 @@ public class Ventana extends JFrame implements ActionListener{
 		setTitle("Tarea de concurrencia");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		for(int i=0; i<10000000; i++) {
+		//10000000
+		for(int i=0; i<30000; i++) {
 			if((int)((Math.random()*2)+1)==1) {
 				al.add("Si");
 			}else {
@@ -99,6 +147,21 @@ public class Ventana extends JFrame implements ActionListener{
 		panel2.add(sp2);
 		panel2.setBorder(BorderFactory.createTitledBorder("No"));
 		add(panel2);
+		
+		JProgressBar pg = new JProgressBar(0, 2);
+		pg.setValue(0);
+		pg.setStringPainted(true);
+		
+		// ------------------------------------------------
+		
+        Contenedor c = new Contenedor(pg, al, area1, area2);
+		
+		Thread t = new Thread(c);
+		t.start();
+		
+		// ------------------------------------------------
+		
+		add(pg);
 		
 		
 		setVisible(true);
