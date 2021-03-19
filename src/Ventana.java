@@ -3,7 +3,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,11 +12,21 @@ import javax.swing.JTextArea;
 
 
 public class Ventana extends JFrame implements ActionListener{
-
+	
+	ArrayList<String> al = new ArrayList<String>();
+	
 	public Ventana(){
 		getContentPane().setLayout(new FlowLayout());
 		setTitle("Tarea de concurrencia");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		for(int i=0; i<10000000; i++) {
+			if((int)((Math.random()*2)+1)==1) {
+				al.add("Si");
+			}else {
+				al.add("No");
+			}
+		}
 		
 		
 		JTextArea area1 = new JTextArea(10, 10);
@@ -53,9 +63,10 @@ public class Ventana extends JFrame implements ActionListener{
 		
 		
 		setVisible(true);
-		setLocationRelativeTo(null);
 		pack();
+		setLocationRelativeTo(null);
 	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
