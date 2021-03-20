@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -47,10 +48,13 @@ class Contenedor implements Runnable{
 				
 		}
 		
-		Thread t = new Thread(new ProgressBar(pg, i, 1));
-		t.start();
+		ProgressBar pg2=new ProgressBar(pg, i, 1);
+		ProgressBar pg3=new ProgressBar(pg1, j, 2);
 		
-		Thread t2 = new Thread(new ProgressBar(pg1, j, 2));
+		Thread t = new Thread(pg2);
+		Thread t2 = new Thread(pg3);
+		
+		t.start();
 		t2.start();
 		
 	}
@@ -67,16 +71,21 @@ class ProgressBar implements Runnable{
 		this.pg = pg;
 		this.cantidad = cantidad;
 		this.opcion=opcion;
-		pg.setMaximum(30000);
 	}
 
 	@Override
 	public void run() {
-		
+		pg.setMaximum(30000);
 		pg.setValue(cantidad);
 		
+		for(int i=1; i<=cantidad;i+=1000) {
+			pg.setString("Calculando...");
+			
+		    pg.setValue(i);
+		}
+		
 		if(opcion==1)
-		    pg.setString("SI: "+cantidad);
+		    pg.setString("SI"+cantidad);
 		else
 			pg.setString("NO: "+cantidad);
        	
@@ -106,11 +115,11 @@ public class Ventana extends JFrame implements ActionListener{
 			}
 		}
 		
-		area1 = new JTextArea(10, 10);
+		area1 = new JTextArea(15, 15);
 		area1.setLineWrap(true);
     	area1.setWrapStyleWord(true);
     	
-		area2 = new JTextArea(10, 10);
+		area2 = new JTextArea(15, 15);
 		area2.setLineWrap(true);
     	area2.setWrapStyleWord(true);
     	
