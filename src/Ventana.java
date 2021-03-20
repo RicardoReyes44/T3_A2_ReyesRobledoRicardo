@@ -85,7 +85,7 @@ class ProgressBar implements Runnable{
 		}
 		
 		if(opcion==1)
-		    pg.setString("SI"+cantidad);
+		    pg.setString("SI: "+cantidad);
 		else
 			pg.setString("NO: "+cantidad);
        	
