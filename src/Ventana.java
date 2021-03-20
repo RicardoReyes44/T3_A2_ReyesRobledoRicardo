@@ -22,25 +22,22 @@ class Contenedor implements Runnable{
 	JTextArea area1;
 	JTextArea area2; 
 	JProgressBar pg;
+	JProgressBar pg1;
 
 	
-	public Contenedor(JProgressBar pg, ArrayList<String> al, JTextArea area1, JTextArea area2){
+	public Contenedor(JProgressBar pg, JProgressBar pg1, ArrayList<String> al, JTextArea area1, JTextArea area2){
 		this.al=al;
 		this.area1=area1;
 		this.area2=area2;
 		this.pg=pg;
+		this.pg1=pg1;
 	}
 	
 
 	@Override
 	public void run() {
 		
-        ProgressBar pg2 = new ProgressBar(pg, al, area1, area2);
-		
-		Thread t2 = new Thread(pg2);
-		t2.start();
-		
-		long i=0, j=0;
+		int i=0, j=0;
 		for(String a: al) {
 			if(a.equals("Si")) {
 				area1.append((i++)+" "+a+"\n");
@@ -50,6 +47,12 @@ class Contenedor implements Runnable{
 				
 		}
 		
+		Thread t = new Thread(new ProgressBar(pg, i, 1));
+		t.start();
+		
+		Thread t2 = new Thread(new ProgressBar(pg1, j, 2));
+		t2.start();
+		
 	}
 }
 
@@ -57,36 +60,26 @@ class Contenedor implements Runnable{
 class ProgressBar implements Runnable{
 	
 	JProgressBar pg;
-	ArrayList<String> al;
-	JTextArea area1;
-	JTextArea area2;
+	int cantidad;
+	int opcion;
 	
-	public ProgressBar(JProgressBar pg, ArrayList<String> al, JTextArea area1, JTextArea area2){
+	public ProgressBar(JProgressBar pg, int cantidad, int opcion){
 		this.pg = pg;
-		this.al = al;
-		this.area1=area1;
-		this.area2=area2;
+		this.cantidad = cantidad;
+		this.opcion=opcion;
+		pg.setMaximum(30000);
 	}
 
 	@Override
 	public void run() {
-		pg.setMaximum(30000);
 		
-		for(int i=1; i<=30000; i+=11) {
+		pg.setValue(cantidad);
 		
-		if (i<15000) 
-            pg.setString("Espera..."); 
-        else if (i< 30000) 
-            pg.setString("Vamos a la mitad..."); 
-		pg.setValue(i);
-		try {
-			Thread.sleep(3);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		   }
-	    }
-       	pg.setString("Listo");
+		if(opcion==1)
+		    pg.setString("SI: "+cantidad);
+		else
+			pg.setString("NO: "+cantidad);
+       	
 	}
 }
 
@@ -151,10 +144,16 @@ public class Ventana extends JFrame implements ActionListener{
 		JProgressBar pg = new JProgressBar(0, 2);
 		pg.setValue(0);
 		pg.setStringPainted(true);
+		pg.setString("Cargando datos... de SI");
+		
+		JProgressBar pg1 = new JProgressBar(0, 2);
+		pg1.setValue(0);
+		pg1.setStringPainted(true);
+		pg1.setString("Cargando datos... de NO");
 		
 		// ------------------------------------------------
 		
-        Contenedor c = new Contenedor(pg, al, area1, area2);
+        Contenedor c = new Contenedor(pg, pg1, al, area1, area2);
 		
 		Thread t = new Thread(c);
 		t.start();
@@ -162,6 +161,7 @@ public class Ventana extends JFrame implements ActionListener{
 		// ------------------------------------------------
 		
 		add(pg);
+		add(pg1);
 		
 		
 		setVisible(true);
